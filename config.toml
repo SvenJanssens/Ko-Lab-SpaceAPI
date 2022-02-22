@@ -1,0 +1,6 @@
+[settings]
+spaceapi_url = "https://vloer.ko-lab.space/spaceapi.json"
+
+[messages]
+space_open = "The Space is open :partying_face:"
+space_closed = "The Space is closed :scream:"
