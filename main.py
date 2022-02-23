@@ -94,7 +94,7 @@ async def send_meetup_events(channel):
   
   i = 0
 
-  meetup_message = "Volgende publieke events:\n"
+  meetup_message = "Next public events:\n"
   
   while i < max_index:
     item = items[i]
