@@ -32,37 +32,47 @@ class MyClient(discord.Client):
       msg = message.content
 
       if msg.startswith('?space-open'):
-        await handle_open_state(message.channel, True)
+        await handle_open_state(message.channel, True, client)
   
 
     @tasks.loop(seconds=60) # task runs every 60 seconds
     async def my_background_task(self):
         channel = self.get_channel(os.environ['BOT_CHANNEL'])
-        await handle_open_state(channel, False)
+        await handle_open_state(channel, False, None)
 
 
     @my_background_task.before_loop
     async def before_my_task(self):
         await self.wait_until_ready() # wait until the bot logs in
+        await handle_open_state(None, True, self)
 
 
-async def handle_open_state(channel, always_send):
+
+async def handle_open_state(channel, always_send, client):
   open_state = get_open_state()
   already_sent = False
 
   if open_state == "OPEN":
     state_message = space_open_message
+    status_message = space_open_status
   else:
     state_message = space_closed_message
+    status_message = space_closed_status
 
   if check_open_state_changed(open_state):
     update_open_state(open_state)
 
-    await channel.send(state_message)
+    if channel:
+      await channel.send(state_message)
+    
+    if client:
+      await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status_message))
+      
     already_sent = True
 
   if always_send and already_sent == False:
-    await channel.send(state_message)
+    if channel:
+      await channel.send(state_message)
 
 
 def update_open_state(open_state):
@@ -99,6 +109,8 @@ print(config)
 spaceapi_url = config["settings"]["spaceapi_url"]
 space_open_message = config["messages"]["space_open"]
 space_closed_message = config["messages"]["space_closed"]
+space_open_status = config["statuses"]["space_open"]
+space_closed_status = config["statuses"]["space_closed"]
 
 client = MyClient()
 
