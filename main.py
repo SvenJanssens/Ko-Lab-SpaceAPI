@@ -65,7 +65,7 @@ async def handle_open_state(channel, always_send, client):
     if channel:
       await channel.send(state_message)
     
-    if client:
+    if client and change_status:
       await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status_message))
       
     already_sent = True
@@ -74,7 +74,7 @@ async def handle_open_state(channel, always_send, client):
     if channel:
       await channel.send(state_message)
 
-    if client:
+    if client and change_status:
       await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status_message))
 
 
@@ -114,6 +114,7 @@ space_open_message = config["messages"]["space_open"]
 space_closed_message = config["messages"]["space_closed"]
 space_open_status = config["statuses"]["space_open"]
 space_closed_status = config["statuses"]["space_closed"]
+change_status = config["statuses"]["change_status"]
 
 client = MyClient()
 
