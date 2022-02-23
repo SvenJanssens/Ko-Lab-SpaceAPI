@@ -6,6 +6,6 @@ space_open = "The Space is open :partying_face:"
 space_closed = "The Space is closed :scream:"
 
 [statuses]
-change_status = true
+change_status = false
 space_open = "an open Space 😀"
 space_closed = "a closed Space 😱"
