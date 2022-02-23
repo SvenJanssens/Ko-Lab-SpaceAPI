@@ -74,7 +74,7 @@ async def handle_open_state(channel, always_send, client):
     if channel:
       await channel.send(state_message)
 
-    if client and change_status:
+    if client:
       await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status_message))
 
 
