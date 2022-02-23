@@ -33,6 +33,7 @@ class MyClient(discord.Client):
 
       if msg.startswith('?space-open'):
         await handle_open_state(message.channel, True, client)
+        await send_meetup_events(message.channel)
   
 
     @tasks.loop(seconds=60) # task runs every 60 seconds
@@ -80,6 +81,33 @@ async def handle_open_state(channel, always_send, client):
       else:
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=""))
 
+async def send_meetup_events(channel):
+  response = requests.get(meetup_events_url)
+  json_data = json.loads(response.text)
+  
+  items = json_data["items"]
+  
+  if len(items) > 5:
+    max_index = 5
+  else:
+    max_index = len(items)
+  
+  i = 0
+
+  meetup_message = "Volgende publieke events:\n"
+  
+  while i < max_index:
+    item = items[i]
+    description_parts = item["description"].split("<p>")
+    datetime = description_parts[5].replace("</p> ", "")
+
+    meetup_message += " - " + datetime + ": " + item["title"] + " - More info @ " + item["link"] + "\n"
+  
+    i += 1
+
+  await channel.send(meetup_message)
+  
+
 def update_open_state(open_state):
   db["open_state"] = open_state
 
@@ -117,6 +145,8 @@ space_closed_message = config["messages"]["space_closed"]
 space_open_status = config["statuses"]["space_open"]
 space_closed_status = config["statuses"]["space_closed"]
 change_status = config["statuses"]["change_status"]
+
+meetup_events_url = config["settings"]["meetup_events_url"] 
 
 client = MyClient()
 

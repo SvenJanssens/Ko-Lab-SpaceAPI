@@ -1,5 +1,6 @@
 [settings]
 spaceapi_url = "https://vloer.ko-lab.space/spaceapi.json"
+meetup_events_url = "https://api.rss2json.com/v1/api.json?rss_url=https://www.meetup.com/Ko-Lab-mechelen/events/rss/"
 
 [messages]
 space_open = "The Space is open :partying_face:"
